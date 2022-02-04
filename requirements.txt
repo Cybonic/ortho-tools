@@ -1,0 +1,12 @@
+#rioxarray
+progressbar
+
+# File Downloader
+requests
+tqdm
+bs4
+numpy
+tifffile
+pyyaml
+matplotlib
+rioxarray

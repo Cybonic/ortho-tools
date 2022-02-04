@@ -1,0 +1,5 @@
+env/*
+SUB_IMG
+old_code
+*.png
+__pycache__
