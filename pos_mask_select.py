@@ -92,7 +92,7 @@ if __name__=='__main__':
     # TEST_SAVE_SUB_IM()
     parser = argparse.ArgumentParser(description='Split and save sub tiff images')
     parser.add_argument('--src_dir',
-                        default =  '/home/tiago/workspace/valdoeiro/x7_/masks',
+                        default =  '/home/tiago/workspace/valdoeiro/x7_/rmasks',
                         help='')
             
     args = parser.parse_args()
