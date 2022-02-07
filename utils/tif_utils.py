@@ -22,3 +22,10 @@ def show_raster_info(raster):
 
 def tiff2numpy(tiff):
     return(np.array(tiff.values))
+
+def show_rasterio_shape(raster):
+    image = raster.read()
+    print(f"Raster shape: {raster.shape}")
+    print(np.array(image).max())
+    print(np.array(image).min())
+    #show(raster)

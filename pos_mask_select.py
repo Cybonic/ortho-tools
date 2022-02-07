@@ -4,6 +4,7 @@ import utils.utils as utils
 import numpy as np
 from PIL import Image 
 import shutil
+import  tqdm
 
 def save_files(dst_path,files):
     
@@ -18,6 +19,26 @@ def save_files(dst_path,files):
         #img.save(dst_f)
 
 
+def find_positive_masks(mask_files):
+    
+    pos_files= {'root':'','files':[],'file_type':''}
+
+    pos_files['root']=mask_files['root']
+    pos_files['file_type']=mask_files['file_type']
+    positive_indice_list = []
+    for indice,file in tqdm.tqdm(enumerate(mask_files['files'])):
+        # Load file
+        f = os.path.join(mask_files['root'],file) + '.' + mask_files['file_type']
+
+        mask_array = np.array(Image.open(f)).astype(np.uint8)
+        #print(mask_array)
+
+        # verify if there are positive labels
+        if (mask_array > 1).any():
+            pos_files['files'].append(file)
+            positive_indice_list.append(indice)
+    
+    return(pos_files,positive_indice_list)
     
 
 def match_file_pair(ref_files,src_files):
@@ -39,31 +60,28 @@ def match_file_pair_list(ref_files,src_files):
     return(indices,matched_files)
 
 
-def main_set_selection(src_dir,ref_dir,dst_dir):
+def main_mask_selection(src_dir):
 
     if not os.path.isdir(src_dir):
-        return(NameError)
+        return(NameError("Dir does not exists!"))
     
     # Get src files
-    src_files = utils.get_files(src_dir)
-    ref_files = utils.get_files(ref_dir)
+    mask_files = utils.get_files(src_dir)
+
 
     # find positive masks
-    ref_files,src_files = match_file_pair(ref_files,src_files)
+    _, pos_indices = find_positive_masks(mask_files)
     
+    mask_files['files'] = np.array(mask_files['files'])[pos_indices]
     #Build destination path
-    path_split = src_dir.split(os.sep)
-    src_dir = os.sep.join(path_split[0:-1])
-    src_dir= os.path.join(src_dir,'pos_' + path_split[-1])
-
-    if not os.path.isdir(ref_dir):
-        os.makedirs(ref_dir)
+    src_dir = os.sep.join(src_dir.split(os.sep)[0:-1])
+    src_dir= os.path.join(src_dir,'pos_masks')
     
     if not os.path.isdir(src_dir):
         os.makedirs(src_dir)
 
     # Save files to dest dir
-    save_files(src_dir,src_files)
+    save_files(src_dir,mask_files)
 
 
 
@@ -74,30 +92,21 @@ if __name__=='__main__':
     # TEST_SAVE_SUB_IM()
     parser = argparse.ArgumentParser(description='Split and save sub tiff images')
     parser.add_argument('--src_dir',
-                        default =  '/home/tiago/workspace/valdoeiro/x7_/images',
-                        help='')
-    parser.add_argument('--ref_dir',
-                        default =  '/home/tiago/workspace/valdoeiro/x7_/pos_masks',
-                        help='')
-    parser.add_argument('--dest_dir',
-                        default = 'changed',
+                        default =  '/home/tiago/workspace/valdoeiro/x7_/masks',
                         help='')
             
     args = parser.parse_args()
     
 
     src_dir  = args.src_dir
-    dest_dir = args.dest_dir
-    ref_dir = args.ref_dir
+
 
 
     print("="*50)
     print("src file: %s"%(src_dir))
-    print("Dest. directory: %s"%(dest_dir))
-    print("ref file: %s"%(ref_dir))
 
     print("="*50)
 
 
-    main_set_selection(src_dir,ref_dir,dest_dir)
+    main_mask_selection(src_dir)
     

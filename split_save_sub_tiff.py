@@ -199,10 +199,10 @@ if __name__=='__main__':
     # TEST_SAVE_SUB_IM()
     parser = argparse.ArgumentParser(description='Split and save sub tiff images')
     parser.add_argument('--source_file',
-                        default = '/home/tiago/workspace/valdoeiro/x7/dsm_prj.tif',
+                        default = '/home/tiago/workspace/valdoeiro/x7_/dsm_prj.tif',
                         help='')
     parser.add_argument('--dest_dir',
-                        default = "/home/tiago/workspace/valdoeiro/x7/dsm_all",
+                        default = "/home/tiago/workspace/valdoeiro/x7_/dsm",
                         help='')
     parser.add_argument('--height',
                         default = 240,
