@@ -72,7 +72,7 @@ def tif2png(tifarray):
     
     return(tif)
 
-def conv_tif_to_png(file,bands=[0,1,2]):
+def conv_tif_to_png(file,bands=[1,0,2]):
     
     raster = rioxarray.open_rasterio(file)
     image = tif2png(raster)
@@ -81,7 +81,7 @@ def conv_tif_to_png(file,bands=[0,1,2]):
     return(image)
 
 
-def main_conv_to_png(src,dst):
+def main_conv_list_of_tif_to_png(src,dst):
     # Get src files
     src_files = utils.get_files(src)
 
@@ -94,17 +94,29 @@ def main_conv_to_png(src,dst):
         dest_file = os.path.join(dst,file) + '.' + 'png'
         image.save(dest_file)
 
+def main_tif_to_png(file):
+    assert os.path.isfile(file)
+    image = conv_tif_to_png(file)
+    
+    split = file.split(os.sep)
+    name = split[-1].split('.')[0]
+    root = os.sep.join(split[:-1])
 
+    dest_file = os.path.join(root,name + '.' + 'png')
+    image.save(dest_file)
 
 if __name__=='__main__':
     
     # TEST_SAVE_SUB_IM()
     parser = argparse.ArgumentParser(description='Split and save sub tiff images')
     parser.add_argument('--source_dir',
-                        default =  '/home/tiago/learning/qtabaixo/altum/images',
+                        default =  '',
                         help='')
     parser.add_argument('--dest_dir',
-                        default = '/home/tiago/learning/qtabaixo/altum/png_images',
+                        default = '/media/tiago/vbig/dataset/green-botics',
+                        help='')
+    parser.add_argument('--source_file',
+                        default =  '/media/tiago/vbig/dataset/greenAI/Satelite_alta_resolucao/Satelite_alta_resolução/esac/IMG_PHR1B_PMS_202009301132105_ORT_2e86f0c6-3174-476c-c77b-433fd389463f-001_R1C1.TIF',
                         help='')
 
     args = parser.parse_args()
@@ -112,34 +124,11 @@ if __name__=='__main__':
     source_dir = args.source_dir
     dest_dir    = args.dest_dir
     
-    main_conv_to_png(source_dir,dest_dir)
+    if source_dir != '':
+        main_conv_list_of_tif_to_png(source_dir,dest_dir)
+    
+    main_tif_to_png(args.source_file)
 
-'''
-if array.shape[0]==1:
-    array = utils.normalize(array) 
-    array= array.squeeze()
-    array = np.stack((array,array,array),axis=0)
-else:
-    # if array.shape[0]==6: # DSM
-    array = array.transpose(1,2,0)
-    rgb = array[:,:,bands]
-    if array.shape[0]==6:
-        for c in range(0,rgb.shape[2]):
-            rgb[:,:,c] = utils.normalize(rgb[:,:,c])
-        rgb = np.array(rgb*255,dtype=np.uint8)
-    array = rgb
-
-
-target_width  = 240 
-target_height = 240 
-
-max_itr = height
-print(max_itr)
-file_name = source_path.split('.')[0] + '.png'
-#img_path = os.path.join(dest_path,"%05d_%05d.png"%(h_itr,w_itr))
-saver.imsave(file_name, array)
-
-'''
 
 
 

@@ -19,9 +19,11 @@ from PIL import Image
 
 
 
-file_path = '/home/tiago/workspace/valdoeiro/x7/dsm.tif'
+file_path = '/media/tiago/vbig/dataset/greenAI/Satelite_alta_resolucao/Satelite_alta_resolução/esac/IMG_PHR1B_PMS_202009301132105_ORT_2e86f0c6-3174-476c-c77b-433fd389463f-001_R1C1.TIF'
 img_path = '/home/tiago/dsm.tif'
 tiff_list = []
+
+src = rasterio.open(file_path)
 # arr = os.listdir(file_path)
 raster = rioxarray.open_rasterio(file_path).squeeze()
 
