@@ -24,58 +24,21 @@ from PIL import Image
 import argparse
 
 
-'''
-# File 
-source_path = '/home/tiago/greenai/dataset/QtaBaixo27Jul/altum/images_test_tiff/00000_00000.tif'
-dest_path =  '/home/tiago/greenai/dataset/QtaBaixo27Jul/altum/'
-OUTPUT_NAME = 'OrthoAltumQtaBaixoJul27'
-# open file
-raster = rioxarray.open_rasterio(source_path)
-
-print(raster.rio.crs)
-print(raster.rio.nodata)
-print(raster.rio.bounds())
-print(raster.rio.width)
-print(raster.rio.height)
-
-width = raster.rio.width 
-height = raster.rio.height 
-
-
-array = np.array(raster.values)
-
-print(array.max())
-print(array.min())
-bands = [0,1,2]
-
-
-#target_bands = array[bands,:,:]
-target_bands = np.transpose(array,(1,2,0))
-
-array = (utils.preprocessing(target_bands)*255).astype(np.uint8)
-print(array.max())
-print(array.min())
-
-
-
-target_img = Image.fromarray(target_bands)
-
-target_img.save(os.path.join(dest_path,OUTPUT_NAME + '.png'))
-
-'''
-
-
 def tif2png(tifarray):
     array = tifarray.values
-    array = np.transpose(array,(1,2,0))
+    array = np.transpose(array,(0,1,2))
     tif = ((array ** (1/4)) * 255).astype(np.uint8)
     
     return(tif)
 
-def conv_tif_to_png(file,bands=[1,0,2]):
+def conv_tif_to_png(file,bands=[0,1,2]):
     
     raster = rioxarray.open_rasterio(file)
-    image = tif2png(raster)
+    if 'X7' in file: #RGB Only
+        array = raster.values
+        image = np.transpose(array,(1,2,0))
+    else:
+        image = tif2png(raster)
     image = image[:,:,bands]
     image = Image.fromarray(image)
     return(image)
@@ -116,7 +79,7 @@ if __name__=='__main__':
                         default = '/media/tiago/vbig/dataset/green-botics',
                         help='')
     parser.add_argument('--source_file',
-                        default =  '/media/tiago/vbig/dataset/greenAI/Satelite_alta_resolucao/Satelite_alta_resolução/esac/IMG_PHR1B_PMS_202009301132105_ORT_2e86f0c6-3174-476c-c77b-433fd389463f-001_R1C1.TIF',
+                        default =  '/media/tiago/vbig/dataset/green-botics/OrtoX7_HortoBeira_May2022.tif',
                         help='')
 
     args = parser.parse_args()
