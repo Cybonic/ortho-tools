@@ -19,7 +19,7 @@ from PIL import Image
 
 
 
-file_path = '/media/tiago/vbig/dataset/greenAI/Satelite_alta_resolucao/Satelite_alta_resolução/esac/IMG_PHR1B_PMS_202009301132105_ORT_2e86f0c6-3174-476c-c77b-433fd389463f-001_R1C1.TIF'
+file_path = '/home/tiago/workspace/deep-segmentation/dataset/soil_classification/s2_cutted.tif'
 img_path = '/home/tiago/dsm.tif'
 tiff_list = []
 
